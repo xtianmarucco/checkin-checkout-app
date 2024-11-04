@@ -19,11 +19,11 @@ export default async function handler(req, res) {
       .single();
   
     if (error || !user) {
-      return res.status(401).json({ error: 'User not found or incorrect credentials.' });
+      return res.status(401).json({ error: 'Usuario no encotrado o credenciales incorrectas.' });
     }
   
     if (password !== user.password) {
-      return res.status(401).json({ error: 'Invalid credentials.' });
+      return res.status(401).json({ error: 'Credenciales incorrectas.' });
     }
   
     // Enviar la respuesta con `id`, `email`, y `role`

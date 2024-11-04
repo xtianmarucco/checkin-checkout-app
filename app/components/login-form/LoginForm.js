@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -6,52 +6,95 @@ import { AuthService } from "@/services/AuthService";
 import { useUser } from "@/app/context/UserContext";
 
 export default function LoginForm() {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [errorMessage, setErrorMessage] = useState("");
-    const { loginUser } = useUser();
-    const router = useRouter();
-  
-    const handleSubmit = async (e) => {
-      e.preventDefault();
-  
-      if (!email || !password) {
-        setErrorMessage("Please enter both email and password.");
-        return;
-      }
-  
-      const { data, error } = await AuthService.login(email, password);
-  
-      if (error) {
-        setErrorMessage(error);
-      } else {
-        loginUser(data); // Guardar el perfil completo en el contexto
-        router.push("/checkin"); // Redirigir a la página de registro
-      }
-    };
-  
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const { loginUser } = useUser();
+  const router = useRouter();
+
+  const validateEmail = () => {
+    if (!email) {
+      setEmailError("El campo de email es obligatorio.");
+      return false;
+    } else if (!/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) {
+      setEmailError("El formato del email es incorrecto.");
+      return false;
+    } else {
+      setEmailError("");
+      return true;
+    }
+  };
+
+  const validatePassword = () => {
+    if (!password) {
+      setPasswordError("El campo de contraseña es obligatorio.");
+      return false;
+    } else if (!/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/.test(password)) {
+      setPasswordError("La contraseña debe tener al menos 6 caracteres, letras y números.");
+      return false;
+    } else {
+      setPasswordError("");
+      return true;
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const isEmailValid = validateEmail();
+    const isPasswordValid = validatePassword();
+
+    if (!isEmailValid || !isPasswordValid) return;
+
+    const { data, error } = await AuthService.login(email, password);
+
+    if (error) {
+      setErrorMessage(error);
+    } else {
+      loginUser(data); // Guardar el perfil completo en el contexto
+      router.push("/checkin"); // Redirigir a la página de registro
+    }
+  };
+
   return (
-    <div>
-      <h1>Login</h1>
-      <form onSubmit={handleSubmit}>
+    <div className="bg-secondary p-8 rounded-lg shadow-md max-w-md mx-auto">
+      <h1 className="text-3xl font-bold text-primary-dark mb-6 text-center">Login</h1>
+      <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label>Email:</label>
+          <label className="block text-primary-dark text-sm font-semibold mb-2">
+            Email:
+          </label>
           <input
+          novalidate 
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            onBlur={validateEmail}
+            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-primary"
           />
+          {emailError && <p className="text-red-500 text-sm mt-1">{emailError}</p>}
         </div>
         <div>
-          <label>Password:</label>
+          <label className="block text-primary-dark text-sm font-semibold mb-2">
+            Password:
+          </label>
           <input
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            onBlur={validatePassword}
+            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-primary"
           />
+          {passwordError && <p className="text-red-500 text-sm mt-1">{passwordError}</p>}
         </div>
-        <button type="submit">Login</button>
-        {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
+        <button
+          type="submit"
+          className="w-full bg-primary-dark hover:bg-primary text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+        >
+          Ingresar
+        </button>
+        {errorMessage && <p className="text-red-500 text-sm mt-4">{errorMessage}</p>}
       </form>
     </div>
   );
