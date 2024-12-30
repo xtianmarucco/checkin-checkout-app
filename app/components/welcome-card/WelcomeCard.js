@@ -7,10 +7,10 @@ export default function WelcomeCard({ user }) {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  const handleRegistro = (accion) => {
+  const handleRegistro = (action) => {
     setLoading(true);
     // Redirigir a la página de escaneo de QR y pasar la acción seleccionada como query
-    router.push(`/checkin/scan?action=${accion}`);
+    router.push(`/checkin/scan?action=${action}`);
     setLoading(false);
   };
 

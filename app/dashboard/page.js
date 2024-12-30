@@ -15,7 +15,7 @@ export default function Dashboard() {
     async function fetchUsers() {
       setLoading(true);
   
-      // Trae los datos de la tabla 'users' en Supabase
+      // fetches data from table 'users' in Supabase
       const { data, error } = await supabase
         .from('users')  // Asegúrate de que el nombre coincida con tu tabla en Supabase
         .select('*');

@@ -4,9 +4,8 @@ import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { supabase } from "../../../supabaseClient";
 import { useUser } from "../../context/UserContext";
-import QrScanner from "../../components/qr-scanner/QrScanner";
 
-export default function EscanearPage() {
+export default function ScanPage() {
   const { user } = useUser();
   const [message, setMessage] = useState("");
   const [scanning, setScanning] = useState(true);
@@ -41,11 +40,11 @@ export default function EscanearPage() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-secondary text-center">
       <h1 className="text-2xl font-bold text-primary-dark mb-6">Escanear Código QR</h1>
-      {scanning ? (
+      {/* {scanning ? (
         <QrScanner onScan={handleScan} onError={handleError} />
       ) : (
         <p className="text-primary-dark">Procesando...</p>
-      )}
+      )} */}
       {message && <p className="mt-4 text-primary-dark">{message}</p>}
     </div>
   );
