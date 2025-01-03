@@ -27,6 +27,7 @@ export const createUser = async (userData) => {
       return {
         ...userData,
         otp_secret,
+        user_otp_configured: false,
       }; // Retornar los datos generados localmente
     }
 

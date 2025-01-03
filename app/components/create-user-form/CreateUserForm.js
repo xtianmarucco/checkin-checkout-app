@@ -9,6 +9,7 @@ export default function CreateUserForm() {
     username: "",
     lastname: "",
     email: "",
+    password:"",
     id_number: "",
     role: "employee",
     hourly_wage: "",
@@ -39,6 +40,7 @@ export default function CreateUserForm() {
         username: "",
         lastname: "",
         email: "",
+        password:"",
         id_number: "",
         role: "employee",
         hourly_wage: "",
@@ -89,6 +91,17 @@ export default function CreateUserForm() {
             type="email"
             name="email"
             value={formData.email}
+            onChange={handleChange}
+            required
+            className="w-full p-2 border rounded"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium">Password</label>
+          <input
+            type="password"
+            name="password"
+            value={formData.password}
             onChange={handleChange}
             required
             className="w-full p-2 border rounded"
