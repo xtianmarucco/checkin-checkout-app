@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { AuthService } from "@/services/AuthService";
 import { useUser } from "@/app/context/UserContext";
 
 export default function LoginForm() {
@@ -11,9 +10,10 @@ export default function LoginForm() {
   const [errorMessage, setErrorMessage] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
-  const { loginUser } = useUser();
+  const { loginUser, loading } = useUser(); // `loading` del contexto para el estado de carga
   const router = useRouter();
 
+  // Validaciones
   const validateEmail = () => {
     if (!email) {
       setEmailError("El campo de email es obligatorio.");
@@ -40,22 +40,25 @@ export default function LoginForm() {
     }
   };
 
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const isEmailValid = validateEmail();
-    const isPasswordValid = validatePassword();
-
-    if (!isEmailValid || !isPasswordValid) return;
-
-    const { data, error } = await AuthService.login(email, password);
-
-    if (error) {
-      setErrorMessage(error);
-    } else {
-      loginUser(data); // Guardar el perfil completo en el contexto
-      router.push("/checkin"); // Redirigir a la página de registro
+  
+    try {
+      setErrorMessage(""); // Limpia errores previos
+      await loginUser(email, password); // Autenticar usuario
+  
+      // Redirigir según el estado de user_otp_configured
+      if (user?.user_otp_configured) {
+        router.push("/checkin"); // Ir a la página de Check-in
+      } else {
+        router.push("/configure-otp"); // Ir a la página de configuración OTP
+      }
+    } catch (err) {
+      setErrorMessage(err.message); // Mostrar mensaje de error
     }
   };
+  
 
   return (
     <div className="bg-secondary p-8 rounded-lg shadow-md max-w-md mx-auto">
@@ -66,7 +69,6 @@ export default function LoginForm() {
             Email:
           </label>
           <input
-          novalidate 
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -90,9 +92,12 @@ export default function LoginForm() {
         </div>
         <button
           type="submit"
-          className="w-full bg-primary-dark hover:bg-primary text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+          className={`w-full bg-primary-dark hover:bg-primary text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline ${
+            loading ? "opacity-50 cursor-not-allowed" : ""
+          }`}
+          disabled={loading}
         >
-          Ingresar
+          {loading ? "Cargando..." : "Ingresar"}
         </button>
         {errorMessage && <p className="text-red-500 text-sm mt-4">{errorMessage}</p>}
       </form>

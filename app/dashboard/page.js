@@ -1,5 +1,6 @@
 'use client';
-
+import ProtectedRoute from "../components/routes-handler/ProtectedRoute";
+import AdminNavbar from "../components/admin-navbar/AdminNavbar";
 import { useState, useEffect } from "react";
 import { supabase } from '@/supabaseClient';
 
@@ -29,7 +30,11 @@ export default function Dashboard() {
     }
   
     return (
+      <ProtectedRoute requiredRole="admin">
+
       <div>
+      <AdminNavbar />
+
         <h1>Users List</h1>
         {loading ? (
           <p>Loading...</p>
@@ -49,6 +54,6 @@ export default function Dashboard() {
           </ul>
         )}
       </div>
-    
+      </ProtectedRoute>
   );
 }

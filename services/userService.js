@@ -13,7 +13,8 @@ export const createUser = async (userData) => {
       [
         {
           ...userData,
-          otp_secret,
+          otp_secret: authenticator.generateSecret(), // Generar clave secreta
+          user_otp_configured: false, // Asegurar que se inicie como falso
         },
       ],
       { returning: "representation" } // Solicitar datos insertados
@@ -27,7 +28,7 @@ export const createUser = async (userData) => {
       return {
         ...userData,
         otp_secret,
-        user_otp_configured: false,
+        // user_otp_configured: false,
       }; // Retornar los datos generados localmente
     }
 

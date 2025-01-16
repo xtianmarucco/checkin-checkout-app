@@ -1,7 +1,23 @@
+"use client"
 
-import  LoginForm  from "@/app/components/login-form/LoginForm";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useUser } from "@/app/context/UserContext";
+import LoginForm from "../components/login-form/LoginForm";
 
 export default function LoginPage() {
+  const { user } = useUser();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (user) {
+      if (user.role === "admin") {
+        router.push("/admin");
+      } else if (user.role === "employee") {
+        router.push("/checkin");
+      }
+    }
+  }, [user, router]);
   return (
     <div className="flex h-screen">
       {/* Contenedor para el formulario de login */}
