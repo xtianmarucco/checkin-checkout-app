@@ -13,7 +13,8 @@ const geistMono = localFont({
   weight: "100 900",
 });
 
-import { UserProvider } from "./context/UserContext";
+import { UserProvider} from "./context/UserContext";
+import {Loader} from "./components/loader/Loader"
 
 export const metadata = {
   title: "Registro de asistencia",
@@ -22,12 +23,16 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
+
+
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <UserProvider> {children}</UserProvider>
+        <UserProvider> {children}
+
+        </UserProvider>
         
       </body>
     </html>

@@ -65,6 +65,7 @@ export function UserProvider({ children }) {
       value={{
         user,
         loading,
+        setLoading,
         loginUser,
         logoutUser,
         updateUserContext, // Exportar la función

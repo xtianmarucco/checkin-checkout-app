@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useUser } from "@/app/context/UserContext";
+import Loader from "../loader/Loader";
 
 export default function LoginForm() {
   const [email, setEmail] = useState("");
@@ -10,7 +11,7 @@ export default function LoginForm() {
   const [errorMessage, setErrorMessage] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
-  const { loginUser, loading } = useUser(); // `loading` del contexto para el estado de carga
+  const { loginUser, loading, user } = useUser(); // Incluye `user` y `loading` desde el contexto
   const router = useRouter();
 
   // Validaciones
@@ -40,28 +41,32 @@ export default function LoginForm() {
     }
   };
 
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
+    const isEmailValid = validateEmail();
+    const isPasswordValid = validatePassword();
+
+    if (!isEmailValid || !isPasswordValid) return;
+
     try {
-      setErrorMessage(""); // Limpia errores previos
-      await loginUser(email, password); // Autenticar usuario
-  
+      setErrorMessage("");
+      await loginUser(email, password);
+
       // Redirigir según el estado de user_otp_configured
       if (user?.user_otp_configured) {
-        router.push("/checkin"); // Ir a la página de Check-in
+        router.push("/checkin");
       } else {
-        router.push("/configure-otp"); // Ir a la página de configuración OTP
+        router.push("/configure-otp");
       }
     } catch (err) {
-      setErrorMessage(err.message); // Mostrar mensaje de error
+      setErrorMessage(err.message || "Hubo un problema al iniciar sesión.");
     }
   };
-  
 
   return (
-    <div className="bg-secondary p-8 rounded-lg shadow-md max-w-md mx-auto">
+    <div className="bg-secondary p-8 rounded-lg shadow-md max-w-md mx-auto relative">
+      {loading && <Loader />} {/* Mostrar el loader si está cargando */}
       <h1 className="text-3xl font-bold text-primary-dark mb-6 text-center">Login</h1>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
